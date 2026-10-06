@@ -16,5 +16,14 @@ export const log = {
 	error: (msg: string, fields?: Record<string, unknown>) => write('error', msg, fields)
 };
 
+function describe(e: unknown): Record<string, unknown> {
+	if (!(e instanceof Error)) return { message: String(e) };
+	const code = (e as Error & { code?: string }).code;
+	return { message: e.message, ...(code && { code }), ...(e.cause !== undefined && { cause: describe(e.cause) }) };
+}
+
+// fetch() only says "fetch failed"; the network reason (ENOTFOUND, ECONNREFUSED, ...) is in `cause`.
 export const errorFields = (e: unknown) =>
-	e instanceof Error ? { error: e.message, stack: e.stack } : { error: String(e) };
+	e instanceof Error
+		? { error: e.message, ...(e.cause !== undefined && { cause: describe(e.cause) }), stack: e.stack }
+		: { error: String(e) };

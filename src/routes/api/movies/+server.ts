@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	if (poster && !hasPoster(movie.id)) {
 		await poster()
 			.then((res) => savePoster(movie.id, res))
-			.catch((e) => log.warn('poster download failed', { movieId: movie.id, ...errorFields(e) }));
+			.catch((e) => log.warn('poster download failed', { movieId: movie.id, source, ...errorFields(e) }));
 	}
 	return json({ movie: stored, added });
 };
