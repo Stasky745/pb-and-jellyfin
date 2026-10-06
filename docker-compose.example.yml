@@ -1,0 +1,17 @@
+# Copy to docker-compose.yml and adjust.
+services:
+  rank:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+    environment:
+      # URL the app uses to reach Jellyfin (e.g. the container name on a shared Docker network).
+      JELLYFIN_URL: http://jellyfin:8096
+      # The two Jellyfin usernames allowed to log in, comma separated (case-insensitive).
+      ALLOWED_USERS: alice,bob
+      # Works over plain http or behind a reverse proxy. The app trusts the proxy's X-Forwarded-Proto
+      # header; if your proxy rewrites the Host header, uncomment this:
+      # HOST_HEADER: x-forwarded-host

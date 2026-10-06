@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+	<defs>
+		<linearGradient id="jelly" gradientUnits="userSpaceOnUse" x1="20" y1="22" x2="46" y2="62">
+			<stop offset="0" stop-color="#aa5cc3" />
+			<stop offset="1" stop-color="#00a4dc" />
+		</linearGradient>
+	</defs>
+	<path d="M32 8 L58 51 H6 Z" fill="#b8763a" stroke="#b8763a" stroke-width="8" stroke-linejoin="round" />
+	<path d="M32 17 L50.5 47.5 H13.5 Z" fill="#e8b062" stroke="#e8b062" stroke-width="5" stroke-linejoin="round" />
+	<g fill="url(#jelly)">
+		<path d="M32 25 L43.5 44 H20.5 Z" stroke="url(#jelly)" stroke-width="5" stroke-linejoin="round" />
+		<path d="M18.5 45 Q21.9 45.5 21.9 50 V51 A2.6 2.6 0 0 0 27.1 51 V50 Q27.1 45.5 30.5 45 Z" />
+		<path d="M26 45 Q29.4 45.5 29.4 50 V56.5 A2.6 2.6 0 0 0 34.6 56.5 V50 Q34.6 45.5 38 45 Z" />
+		<path d="M33.5 45 Q36.9 45.5 36.9 50 V49 A2.6 2.6 0 0 0 42.1 49 V50 Q42.1 45.5 45.5 45 Z" />
+	</g>
+</svg>
