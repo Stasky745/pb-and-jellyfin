@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { posterVersions, retryPoster } from '#lib/posters.svelte.js';
 	import type { Movie } from '#lib/types.js';
 
 	let {
 		movie,
-		posterUrl = `/poster/${encodeURIComponent(movie.id)}`,
+		posterUrl,
 		rank,
 		highlighted = false,
 		onhover,
@@ -19,7 +20,22 @@
 	} = $props();
 
 	let expanded = $state(false);
-	let posterFailed = $state(false);
+	let retrying = $state(false);
+	let failedSrc = $state<string | null>(null);
+
+	const stored = $derived(posterUrl === undefined);
+	const src = $derived(
+		stored ? `/poster/${encodeURIComponent(movie.id)}?v=${posterVersions[movie.id] ?? 0}` : posterUrl
+	);
+	const posterFailed = $derived(failedSrc !== null && failedSrc === src);
+
+	async function onclick() {
+		expanded = !expanded;
+		if (!stored || !posterFailed || retrying) return;
+		retrying = true;
+		await retryPoster(movie.id);
+		retrying = false;
+	}
 </script>
 
 <div
@@ -33,19 +49,26 @@
 	{#if rank !== undefined}
 		<span class="w-7 flex-none text-center text-lg font-bold text-zinc-400">{rank}</span>
 	{/if}
-	{#if posterUrl && !posterFailed}
+	{#if src && !posterFailed}
 		<img
-			src={posterUrl}
+			{src}
 			alt=""
 			loading="lazy"
 			draggable="false"
-			onerror={() => (posterFailed = true)}
+			onerror={() => (failedSrc = src)}
 			class="h-18 w-12 flex-none rounded bg-zinc-800 object-cover"
 		/>
 	{:else}
-		<div class="flex h-18 w-12 flex-none items-center justify-center rounded bg-zinc-800 text-xl text-zinc-600">🎬</div>
+		<div
+			title={stored ? 'No poster — click the card to try again' : undefined}
+			class="flex h-18 w-12 flex-none items-center justify-center rounded bg-zinc-800 text-xl text-zinc-600 {retrying
+				? 'animate-pulse'
+				: ''}"
+		>
+			🎬
+		</div>
 	{/if}
-	<button type="button" class="min-w-0 flex-1 cursor-pointer text-left" onclick={() => (expanded = !expanded)}>
+	<button type="button" class="min-w-0 flex-1 cursor-pointer text-left" {onclick}>
 		<div class="truncate font-medium">{movie.title}</div>
 		{#if movie.year}
 			<div class="text-sm text-zinc-400">{movie.year}</div>
